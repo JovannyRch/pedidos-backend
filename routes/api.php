@@ -29,8 +29,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/users', [UserController::class, 'create']);
-Route::get('/users', [UserController::class,'users']);
-Route::post('/login', [ApiController::class,'login']);
+Route::get('/users', [UserController::class, 'users']);
+Route::post('/login', [ApiController::class, 'login']);
 Route::put('/users/{id}', [UserController::class, 'update']);
 Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
@@ -65,3 +65,4 @@ Route::delete('/oproducts/{id}', [OrderProductsController::class, 'destroy']);
 Route::get('/user-count', [APIController::class, 'getUserCount']);
 Route::get('/product-count', [APIController::class, 'getProductCount']);
 Route::get('/order-count', [APIController::class, 'getOrderCount']);
+Route::get('/counts', [APIController::class, 'getCounts']);
