@@ -21,14 +21,14 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-     
+
         $request->validate([
             'name' => 'required|string',
-        'description' => 'nullable|string', 
-        'price' => 'required|numeric', 
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
         ]);
 
-        
+
         $product = new Product([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
@@ -37,7 +37,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return response()->json(['message' => 'Producto creado con éxito'], 201);
+        return response()->json(['message' => 'Producto creado con éxito', 'status' => 1], 201);
     }
 
     /**
@@ -53,8 +53,8 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-       // $product = Product::with('product')->findOrFail($id);
-       // return response()->json($product);
+        // $product = Product::with('product')->findOrFail($id);
+        // return response()->json($product);
     }
 
     /**
@@ -70,17 +70,17 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         // Validar los datos enviados desde la solicitud
-         $request->validate([
+        // Validar los datos enviados desde la solicitud
+        $request->validate([
             'name' => 'required|string',
-            'description' => 'nullable|string', 
-            'price' => 'required|numeric', 
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
         ]);
 
-        
+
         $product = Product::find($id);
 
-        
+
         if (!$product) {
             return response()->json(['message' => 'Producto no encontrado'], 404);
         }
@@ -90,12 +90,12 @@ class ProductController extends Controller
         $product->description = $request->input('description');
         $product->price = $request->input('price');
 
-     
-        
+
+
 
         $product->save();
 
-        return response()->json(['message' => 'Producto actualizado con éxito'], 200);
+        return response()->json(['message' => 'Producto actualizado con éxito', "status" => 1], 200);
     }
 
     /**
@@ -105,12 +105,12 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
 
-        
+
         if (!$product) {
             return response()->json(['message' => 'Producto no encontrado'], 404);
         }
 
-        
+
         $product->delete();
 
         return response()->json(['message' => 'Producto eliminado con éxito'], 200);
