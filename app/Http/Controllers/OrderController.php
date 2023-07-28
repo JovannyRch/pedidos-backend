@@ -12,7 +12,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::all();
+        $orders = Order::with('user', 'products')->get();
         return response()->json($orders);
     }
 
@@ -22,20 +22,25 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'date' => 'required|date',
-            
             'user_id' => 'required',
+            'products' => 'required|array',
         ]);
-        // Crear el usuario en la base de datos
-        $user = new Order([
-            'date' => $request->input('date'),
-            
+
+        $order = new Order([
+            'date' => new \DateTime(),
             'user_id' =>  $request->input('user_id'),
         ]);
 
-        $user->save();
+        $order->save();
 
-        return response()->json(['message' => 'Orden creada con éxito'], 201);
+        $products = $request->input('products');
+
+        foreach ($products as $product) {
+            $order->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+        }
+
+
+        return response()->json(['message' => 'Orden creada con éxito', 'order' => $order, "status" => 1], 201);
     }
 
     /**
@@ -68,25 +73,25 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         
-         $request->validate([
+
+        $request->validate([
             'date' => 'required|date',
-                
+
         ]);
 
-       
+
         $user = Order::find($id);
 
-       
+
         if (!$user) {
             return response()->json(['message' => 'Orden no encontrado'], 404);
         }
 
-        
-        $user->date = $request->input('date');
-    
 
-       
+        $user->date = $request->input('date');
+
+
+
 
         $user->save();
 
@@ -100,12 +105,12 @@ class OrderController extends Controller
     {
         $user = Order::find($id);
 
-       
+
         if (!$user) {
             return response()->json(['message' => 'Orden no encontrada'], 404);
         }
 
-        
+
         $user->delete();
 
         return response()->json(['message' => 'Orden eliminada con éxito'], 200);
