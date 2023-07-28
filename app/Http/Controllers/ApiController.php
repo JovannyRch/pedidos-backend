@@ -71,8 +71,13 @@ class ApiController extends Controller
             ];
         }
 
+        $topProducts = \App\Models\Product::withCount('orders')
+            ->orderBy('orders_count', 'desc')
+            ->take(5)
+            ->get();
 
-        return response()->json(['users' => $userCount, 'products' => $productCount, 'orders' => $orderCount, "orders_last_7_days" => $datesWithOrders]);
+
+        return response()->json(['users' => $userCount, 'products' => $productCount, 'orders' => $orderCount, "orders_last_7_days" => $datesWithOrders, "top_products" => $topProducts]);
     }
 
     public function addClient(Request $request)
