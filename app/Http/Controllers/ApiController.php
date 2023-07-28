@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use Illuminate\Http\Request;
 
 use App\Models\User;
@@ -57,6 +58,47 @@ class ApiController extends Controller
         $userCount = User::count();
         $productCount = Product::count();
         $orderCount = Order::count();
-        return response()->json(['users' => $userCount, 'products' => $productCount, 'orders' => $orderCount]);
+
+        $datesWithOrders = [];
+        for ($daysAgo = 6; $daysAgo >= 0; $daysAgo--) {
+            $date = \Carbon\Carbon::today()->subDays($daysAgo);
+
+            $orderCount = \App\Models\Order::whereDate('created_at', $date)->count();
+
+            $datesWithOrders[] = [
+                'name' => $date->toDateString(),
+                'value' => $orderCount,
+            ];
+        }
+
+
+        return response()->json(['users' => $userCount, 'products' => $productCount, 'orders' => $orderCount, "orders_last_7_days" => $datesWithOrders]);
+    }
+
+    public function addClient(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'token' => 'required|string',
+        ]);
+
+
+        $client = Client::where('name', $request->input('name'))->first();
+
+        if ($client) {
+            $client->token = $request->input('token');
+            $client->save();
+            return response()->json(['message' => 'Cliente actualizado con éxito', "status" => 1], 201);
+        }
+
+
+        $user = new Client([
+            'name' => $request->input('name'),
+            'token' =>  $request->input('token'),
+        ]);
+
+        $user->save();
+
+        return response()->json(['message' => 'Cliente creado con éxito', "status" => 1], 201);
     }
 }

@@ -20,7 +20,7 @@ class UserController extends Controller
         $user = User::where('email', $request->input('email'))->first();
 
         if ($user) {
-            return response()->json(['message' => 'El correo electrónico ya existe', 'status' => 0], 200);
+            return response()->json(['message' => 'El correo electrónico ya está registrado', 'status' => 0], 200);
         }
 
         // Validar los datos enviados desde la solicitud

@@ -66,3 +66,6 @@ Route::get('/user-count', [APIController::class, 'getUserCount']);
 Route::get('/product-count', [APIController::class, 'getProductCount']);
 Route::get('/order-count', [APIController::class, 'getOrderCount']);
 Route::get('/counts', [APIController::class, 'getCounts']);
+
+
+Route::post('/add/client', [APIController::class, 'addClient']);
